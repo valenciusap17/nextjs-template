@@ -1,5 +1,6 @@
 import './globals.css';
 import {
+  AnyDataTag,
   QueryClient,
   QueryClientProvider,
   useQueryClient,
