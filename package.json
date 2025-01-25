@@ -42,9 +42,9 @@
     }
   },
   "lint-staged": {
-    "*.{js, jsx, tsx, ts}": [
-      "prettier --write .",
-      "npx eslint --max-warnings 0 ."
+    "*.{js,jsx,tsx,ts}": [
+      "prettier --write",
+      "eslint"
     ]
   }
 }

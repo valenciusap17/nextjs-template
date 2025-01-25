@@ -18,10 +18,9 @@ export default [
     'plugin:@typescript-eslint/recommended',
   ),
   {
-    ignores: ['node_modules/**', '.next/**', '.husky/**', 'public/**'],
+    ignores: ['node_modules/**', '.next/**', '.husky/**', 'public/**', '*.mjs'],
   },
   {
-    files: ['src/**/*.ts', 'src/**/*.tsx'],
     languageOptions: {
       parser: (await import('@typescript-eslint/parser')).default,
       parserOptions: {
