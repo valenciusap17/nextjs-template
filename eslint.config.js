@@ -1,65 +1,40 @@
-import tseslint from "typescript-eslint";
-import stylistic from "@stylistic/eslint-plugin";
-import js from "@eslint/js";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import importPlugin from "eslint-plugin-import-x";
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const customStylistic = stylistic.configs.customize({
-  semi: false,
-  quites: "single",
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-export default tseslint.config(
-  { ignores: ["node_modules"] },
+export default [
+  ...compat.extends(
+    'next/core-web-vitals',
+    'next/typescript',
+    'plugin:@typescript-eslint/recommended',
+  ),
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          args: "all",
-          argsIgnorePattern: "^_",
-          caughtErrors: "all",
-          caughtErrorsIgnorePattern: "^_",
-          destructuredArrayIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          ignoreRestSiblings: true,
-        },
-      ],
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
-    },
+    ignores: ['node_modules/**', '.next/**', '.husky/**', 'public/**'],
   },
   {
-    ...customStylistic,
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
+    languageOptions: {
+      parser: (await import('@typescript-eslint/parser')).default,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+        sourceType: 'module',
+        ecmaVersion: 'latest',
+      },
+    },
     rules: {
-      ...customStylistic.rules,
-      "@stylistic/operator-linebreak": "off",
+      'no-unused-vars': 'off',
+      'no-empty-function': 'warn',
+      '@typescript-eslint/no-unused-vars': 'error',
     },
   },
-  {
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
-    rules: {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-    },
-  },
-  {
-    ...importPlugin.flatConfigs.recommended,
-    rules: {
-      "import-x/extension": ["error", "always", { ignorePackages: true }],
-    },
-  },
-);
+];
